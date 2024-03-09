@@ -1,0 +1,113 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+
+int findRoom(int persons[5]) {
+    int roomno;
+    while (1) {
+        roomno = rand() % 5; // 0~4 사이의 난수 생성
+        if (persons[roomno] < 5) { // 해당 방에 빈 베드가 있다면
+            persons[roomno]++; // 인원 수 증가
+            return roomno + 1; // 방 번호는 1~5 사이여야 하므로 1을 더함
+        }
+    }
+}
+
+void printReport(char mn[10][20], int mr[10], int mc, char wn[10][20], int wr[10], int wc) {
+    char rooms[10][5][20] = {0}; // 각 호실별 배정된 학생 이름 저장 (최대 5명)
+    int index;
+
+    printf("===========================================\n");
+    printf("생활관 호실 배정 결과는 다음과 같습니다.\n");
+    printf("===========================================\n");
+
+    // 남학생 명단 출력
+    printf("남학생 명단 명(%d)\n", mc);
+    for (int i = 0; i < mc; i++) {
+        printf("%d. %s [%d호]\n", i + 1, mn[i], mr[i]);
+        index = mr[i] % 100 - 1; // 호실 번호를 인덱스로 변환
+        for (int j = 0; j < 5; j++) {
+            if (rooms[index][j][0] == '\0') { // 비어있는 첫 번째 슬롯을 찾음
+                strcpy(rooms[index][j], mn[i]); // 호실별 학생 이름 저장
+                break;
+            }
+        }
+    }
+
+    // 여학생 명단 출력
+    printf("여학생 명단 명(%d)\n", wc);
+    for (int i = 0; i < wc; i++) {
+        printf("%d. %s [%d호]\n", i + 1, wn[i], wr[i]);
+        index = wr[i] % 100 - 1 + 5; // 200번대 호실을 5~9의 인덱스로 변환
+        for (int j = 0; j < 5; j++) {
+            if (rooms[index][j][0] == '\0') { // 비어있는 첫 번째 슬롯을 찾음
+                strcpy(rooms[index][j], wn[i]); // 호실별 학생 이름 저장
+                break;
+            }
+        }
+    }
+
+    // 호실별 배정 명단 출력
+    printf("호실별 배정 명단\n");
+    for (int i = 0; i < 10; i++) {
+        if (i < 5) { // 남학생 호실
+            printf("10%d호: ", i + 1);
+        } else { // 여학생 호실
+            printf("20%d호: ", i - 4);
+        }
+        for (int j = 0; j < 5; j++) {
+            if (strlen(rooms[i][j]) > 0) {
+                printf("%s ", rooms[i][j]);
+            }
+        }
+        printf("\n");
+    }
+}
+
+int main() {
+    char mnames[10][20]; // 남학생명단(최대 10명)
+    int mroom[10];       // 남학생명단별 호실 배정 목록
+    char wnames[10][20]; // 여학생명단(최대 10명)
+    int wroom[10];       // 여학생명단별 호실 배정 목록
+    int person[2][5] = {0}; // 2개 층별 5개 호실의 배정 인원 수
+    int mcount = 0, wcount = 0; // 인원 합계 (남, 여)
+    int menu;
+
+    srand(time(0)); // 난수 초기화
+    printf("===========================================\n");
+    printf("생활관 호실 배정 프로그램\n");
+    printf("===========================================\n");
+    while (1) {
+        printf("메뉴 : 1.남학생 등록 2.여학생 등록 0.종료 > ");
+        scanf("%d", &menu);
+        if (menu == 0) break;
+        else if (menu == 1) {
+            if (mcount >= 10) {
+                printf("정원 초과입니다. 등록불가!\n");
+                continue;
+            }
+            printf("학생 이름은? > ");
+            scanf("%s", mnames[mcount]);
+            int roomno = findRoom(person[0]);
+            mroom[mcount] = 100 + roomno;
+            printf("%s 학생 %d호실 배정되었습니다.\n", mnames[mcount], mroom[mcount]);
+            mcount++;
+        } else if (menu == 2) {
+            if (wcount >= 10) {
+                printf("정원 초과입니다. 등록불가!\n");
+                continue;
+            }
+            printf("학생 이름은? > ");
+            scanf("%s", wnames[wcount]);
+            int roomno = findRoom(person[1]);
+            wroom[wcount] = 200 + roomno;
+            printf("%s 학생 %d호실 배정되었습니다.\n", wnames[wcount], wroom[wcount]);
+            wcount++;
+        }
+    }
+
+    printReport(mnames, mroom, mcount, wnames, wroom, wcount);
+
+    return 0;
+}
