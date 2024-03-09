@@ -1,0 +1,61 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int main() {
+    int size; // 트로피의 크기를 저장할 변수
+
+    printf("Enter the size: ");
+    scanf("%d", &size);
+
+    // V자 모양의 상단 부분을 만드는 루프
+    for(int i = 0; i < size; i++) {
+        // 왼쪽 별까지의 공백을 출력하는 루프
+        for(int j = 0; j < i; j++) {
+            printf(" ");
+        }
+        // 왼쪽 별 출력
+        printf("*");
+
+        // 별 사이의 공백을 출력하는 루프
+        for(int j = 0; j < 2 * (size - i - 1); j++) {
+            printf(" ");
+        }
+
+        // 오른쪽 별 출력 (마지막 줄 제외)
+        printf("*\n");
+    }
+
+    // 트로피 몸통 부분을 출력하는 루프
+    for(int i = 0; i < size; i++) {
+        for(int j = 0; j < size * 2; j++) {
+            printf("*");
+        }
+        printf("\n");
+    }
+
+    // V자 모양의 하단 부분을 만드는 루프 (하단 V자는 별로 채워진다)
+    for(int i = 0; i < size; i++) {
+        // 왼쪽 별까지의 공백을 출력하는 루프
+        for(int j = 0; j < i; j++) {
+            printf(" ");
+        }
+        // 왼쪽 별 출력
+        printf("*");
+
+        // 별 사이를 채우는 별을 출력하는 루프
+        for(int j = 0; j < 2 * (size - i - 1); j++) {
+            printf("*");
+        }
+
+        // 오른쪽 별 출력
+        printf("*\n");
+    }
+
+    // 트로피의 기초 부분을 출력하는 루프
+    for(int i = 0; i < size * 2; i++) {
+        printf("*");
+    }
+
+    return 0;
+}
